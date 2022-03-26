@@ -1,0 +1,135 @@
+CHIP FeistelEncryption {
+	IN plaintext[16], key[8];
+	OUT ciphertext[16];
+
+	PARTS:
+	// first loop
+	// step 1: plaintext[0..7] XOR key[0..7]
+	Xor(x = plaintext[0], y = key[0], out = mid10);
+	Xor(x = plaintext[1], y = key[1], out = mid11);
+	Xor(x = plaintext[2], y = key[2], out = mid12);
+	Xor(x = plaintext[3], y = key[3], out = mid13);
+	Xor(x = plaintext[4], y = key[4], out = mid14);
+	Xor(x = plaintext[5], y = key[5], out = mid15);
+	Xor(x = plaintext[6], y = key[6], out = mid16);
+	Xor(x = plaintext[7], y = key[7], out = mid17);
+	// step 2: mid1 XOR plaintext[8..15]
+	Xor(x = mid10, y = plaintext[8], out = result10);
+	Xor(x = mid11, y = plaintext[9], out = result11);
+	Xor(x = mid12, y = plaintext[10], out = result12);
+	Xor(x = mid13, y = plaintext[11], out = result13);
+	Xor(x = mid14, y = plaintext[12], out = result14);
+	Xor(x = mid15, y = plaintext[13], out = result15);
+	Xor(x = mid16, y = plaintext[14], out = result16);
+	Xor(x = mid17, y = plaintext[15], out = result17);
+	// step 3: rotate key
+	And(x = key[7], y = true, out = key10);
+	And(x = key[0], y = true, out = key11);
+	And(x = key[1], y = true, out = key12);
+	And(x = key[2], y = true, out = key13);
+	And(x = key[3], y = true, out = key14);
+	And(x = key[4], y = true, out = key15);
+	And(x = key[5], y = true, out = key16);
+	And(x = key[6], y = true, out = key17);
+
+	// second loop
+	// step 1: result1 XOR key1
+	Xor(x = result10, y = key10, out = mid20);
+	Xor(x = result11, y = key11, out = mid21);
+	Xor(x = result12, y = key12, out = mid22);
+	Xor(x = result13, y = key13, out = mid23);
+	Xor(x = result14, y = key14, out = mid24);
+	Xor(x = result15, y = key15, out = mid25);
+	Xor(x = result16, y = key16, out = mid26);
+	Xor(x = result17, y = key17, out = mid27);
+
+	// step 2: plaintext[0..7] XOR mid1
+	Xor(x = plaintext[0], y = mid20, out = result20);
+	Xor(x = plaintext[1], y = mid21, out = result21);
+	Xor(x = plaintext[2], y = mid22, out = result22);
+	Xor(x = plaintext[3], y = mid23, out = result23);
+	Xor(x = plaintext[4], y = mid24, out = result24);
+	Xor(x = plaintext[5], y = mid25, out = result25);
+	Xor(x = plaintext[6], y = mid26, out = result26);
+	Xor(x = plaintext[7], y = mid27, out = result27);
+
+	// step 3: rotate key
+	And(x = key17, y = true, out = key20);
+	And(x = key10, y = true, out = key21);
+	And(x = key11, y = true, out = key22);
+	And(x = key12, y = true, out = key23);
+	And(x = key13, y = true, out = key24);
+	And(x = key14, y = true, out = key25);
+	And(x = key15, y = true, out = key26);
+	And(x = key16, y = true, out = key27);
+
+	// third loop
+	// step 1: result2 XOR key2
+	Xor(x = result20, y = key20, out = mid30);
+	Xor(x = result21, y = key21, out = mid31);
+	Xor(x = result22, y = key22, out = mid32);
+	Xor(x = result23, y = key23, out = mid33);
+	Xor(x = result24, y = key24, out = mid34);
+	Xor(x = result25, y = key25, out = mid35);
+	Xor(x = result26, y = key26, out = mid36);
+	Xor(x = result27, y = key27, out = mid37);
+
+	// step 2: mid3 XOR result1
+	Xor(x = result10, y= mid30, out = result30);
+	Xor(x = result11, y= mid31, out = result31);
+	Xor(x = result12, y= mid32, out = result32);
+	Xor(x = result13, y= mid33, out = result33);
+	Xor(x = result14, y= mid34, out = result34);
+	Xor(x = result15, y= mid35, out = result35);
+	Xor(x = result16, y= mid36, out = result36);
+	Xor(x = result17, y= mid37, out = result37);
+
+	// step 3: rotate key
+	And(x = key27, y = true, out = key30);
+	And(x = key20, y = true, out = key31);
+	And(x = key21, y = true, out = key32);
+	And(x = key22, y = true, out = key33);
+	And(x = key23, y = true, out = key34);
+	And(x = key24, y = true, out = key35);
+	And(x = key25, y = true, out = key36);
+	And(x = key26, y = true, out = key37);
+
+	// fourth loop
+	// step 1: result3 XOR key3
+	Xor(x = result30, y = key30, out = mid40);
+	Xor(x = result31, y = key31, out = mid41);
+	Xor(x = result32, y = key32, out = mid42);
+	Xor(x = result33, y = key33, out = mid43);
+	Xor(x = result34, y = key34, out = mid44);
+	Xor(x = result35, y = key35, out = mid45);
+	Xor(x = result36, y = key36, out = mid46);
+	Xor(x = result37, y = key37, out = mid47);
+
+	// step 2: result2 XOR mid4
+	Xor(x = result20, y = mid40, out = result40);
+	Xor(x = result21, y = mid41, out = result41);
+	Xor(x = result22, y = mid42, out = result42);
+	Xor(x = result23, y = mid43, out = result43);
+	Xor(x = result24, y = mid44, out = result44);
+	Xor(x = result25, y = mid45, out = result45);
+	Xor(x = result26, y = mid46, out = result46);
+	Xor(x = result27, y = mid47, out = result47);
+
+	// output
+	And(x = result40, y = true, out = ciphertext[0]);
+	And(x = result41, y = true, out = ciphertext[1]);
+	And(x = result42, y = true, out = ciphertext[2]);
+	And(x = result43, y = true, out = ciphertext[3]);
+	And(x = result44, y = true, out = ciphertext[4]);
+	And(x = result45, y = true, out = ciphertext[5]);
+	And(x = result46, y = true, out = ciphertext[6]);
+	And(x = result47, y = true, out = ciphertext[7]);
+	And(x = result30, y = true, out = ciphertext[8]);
+	And(x = result31, y = true, out = ciphertext[9]);
+	And(x = result32, y = true, out = ciphertext[10]);
+	And(x = result33, y = true, out = ciphertext[11]);
+	And(x = result34, y = true, out = ciphertext[12]);
+	And(x = result35, y = true, out = ciphertext[13]);
+	And(x = result36, y = true, out = ciphertext[14]);
+	And(x = result37, y = true, out = ciphertext[15]);
+}
